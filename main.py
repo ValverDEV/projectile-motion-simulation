@@ -3,6 +3,8 @@ import numpy as np
 from PropertyBtn import PropertyBtn
 from UpDownControls import UpDownControls
 from ErrorHandler import ErrorHandler
+from CalculateBtn import CalculateBtn
+from LaunchInfo import LaunchInfo
 
 # Initialize pygame
 pygame.init()
@@ -11,6 +13,13 @@ pygame.init()
 screen = pygame.display.set_mode((800, 600))
 
 ErrHandler = ErrorHandler()
+
+# Problem variables
+Y0 = 0
+V0 = 20
+
+Y = Y0
+V = V0
 
 
 # UI
@@ -23,11 +32,15 @@ uiBG.fill((128,128,128))
 
 # UI Controls
 
-VelocityBtn = PropertyBtn('Velocity', 20, pos = 0, ErrHandler = ErrHandler)
-YBtn = PropertyBtn('Y', 0, pos = 1, ErrHandler = ErrHandler)
+VelocityBtn = PropertyBtn('Velocity', V0, pos = 0, ErrHandler = ErrHandler)
+YBtn = PropertyBtn('Y', Y0, pos = 1, ErrHandler = ErrHandler)
 
 VelocityPMbtns = UpDownControls(VelocityBtn)
 YPMbtns = UpDownControls(YBtn)
+
+CalcBtn = CalculateBtn(ErrHandler)
+
+Info = LaunchInfo()
 
 
 # Tower
@@ -48,6 +61,15 @@ bullseyeImg = pygame.image.load('./assets/bullseye.png')
 bullseyeImg = pygame.transform.scale(bullseyeImg, (towerWidth, towerWidth))
 
 
+# Other calculations
+
+cannonRangePXs = 800 - towerPadding - towerWidth - 50 # cannon padding left
+cannonRangeMeters = 165
+
+PixelsPerMeter = cannonRangePXs/cannonRangeMeters
+
+print(PixelsPerMeter)
+
 
 def cannon(x, y):
     screen.blit(cannonImg, (x, y))
@@ -60,15 +82,32 @@ def UI():
     ErrHandler.render(screen)
 
     #Dynamic elements
-    screen.blit(bullseyeImg, (800 - towerPadding - towerWidth, towerHeight - towerWidth))
     VelocityBtn.render(screen)
     YBtn.render(screen)
     VelocityPMbtns.render(screen)
     YPMbtns.render(screen)
+    CalcBtn.render(screen)
+
+    Y = YBtn.value
+    V = VelocityBtn.value
+
+    CalcBtn.Y = Y
+    CalcBtn.V = V
+
+    Info.X = CalcBtn.X
+    Info.theta = CalcBtn.theta
+
+    Info.render(screen)
+
+    targetYDisplacement = towerHeight - towerWidth - Y*PixelsPerMeter
+
+    screen.blit(bullseyeImg, (800 - towerPadding -
+                towerWidth, targetYDisplacement))
 
 def checkClick(mouse):
     VelocityPMbtns.checkClick(mouse)
     YPMbtns.checkClick(mouse)
+    CalcBtn.checkClick(mouse)
 
 
 # Game loop

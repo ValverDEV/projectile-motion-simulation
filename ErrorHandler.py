@@ -16,6 +16,6 @@ class ErrorHandler:
     def render(self, screen):
         if self.activeError:
             if pygame.time.get_ticks() <= self.time + 2000:
-                screen.blit(self.text, (0,0))
+                screen.blit(self.text, (0,70))
             else:
                 self.activeError = False

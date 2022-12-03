@@ -273,5 +273,5 @@ def linear_search_numeric(x0, F, tol=1e-4, delta_rest=0.8, c1=1e-4, rho=0.2, max
         # print((np.linalg.norm(gradF_x0) > tol) or (currentIter < maxIter))
 
     # Solución
-    print(f'Iter: {currentIter}')
+    # print(f'Iter: {currentIter}')
     return F(x0), np.asarray(xx), currentIter+1
