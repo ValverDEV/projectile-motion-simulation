@@ -5,6 +5,7 @@ from UpDownControls import UpDownControls
 from ErrorHandler import ErrorHandler
 from CalculateBtn import CalculateBtn
 from LaunchInfo import LaunchInfo
+from Ball import Ball
 
 # Initialize pygame
 pygame.init()
@@ -42,6 +43,8 @@ CalcBtn = CalculateBtn(ErrHandler)
 
 Info = LaunchInfo()
 
+Bola = Ball()
+
 
 # Tower
 towerWidth = 25
@@ -67,12 +70,8 @@ cannonRangePXs = 800 - towerPadding - towerWidth - 50 # cannon padding left
 cannonRangeMeters = 165
 
 PixelsPerMeter = cannonRangePXs/cannonRangeMeters
-
 print(PixelsPerMeter)
-
-
-def cannon(x, y):
-    screen.blit(cannonImg, (x, y))
+    
 
 def UI():
 
@@ -94,20 +93,31 @@ def UI():
     CalcBtn.Y = Y
     CalcBtn.V = V
 
-    Info.X = CalcBtn.X
+    X = CalcBtn.X
+
+    Info.X = X
     Info.theta = CalcBtn.theta
 
     Info.render(screen)
 
     targetYDisplacement = towerHeight - towerWidth - Y*PixelsPerMeter
+    cannonDisplacement = 800 - towerPadding - towerWidth - X*PixelsPerMeter - 64
 
     screen.blit(bullseyeImg, (800 - towerPadding -
                 towerWidth, targetYDisplacement))
 
+    screen.blit(cannonImg, (cannonDisplacement, cannonY))
+
+    if Bola.isMoving:
+        Bola.updatePosition()
+
+    Bola.render(screen)
+
+
 def checkClick(mouse):
     VelocityPMbtns.checkClick(mouse)
     YPMbtns.checkClick(mouse)
-    CalcBtn.checkClick(mouse)
+    CalcBtn.checkClick(mouse, Bola)
 
 
 # Game loop
@@ -125,7 +135,6 @@ while running:
             mouse_pos = pygame.mouse.get_pos()
             checkClick(mouse_pos)
 
-    cannon(cannonX, cannonY)
     UI()
     
     pygame.display.update()

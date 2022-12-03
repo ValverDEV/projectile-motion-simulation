@@ -36,8 +36,9 @@ class CalculateBtn:
         
         self.ErrHandler.raiseError('No solution, V^2 > 2*g*Y is necessary')
 
-    def checkClick(self, pos):
+    def checkClick(self, pos, Ball):
 
         if self.rect.collidepoint(pos):
             if self.checkSolution():
                 self.maximize()
+                Ball.shoot(self.X, self.V, self.theta)
